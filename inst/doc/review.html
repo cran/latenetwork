@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Review of Causal Inference with Noncompliance and Unknown Interference</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Review of Causal Inference with
+Noncompliance and Unknown Interference</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette reviews the identification and estimation methods
+developed by <a href="https://doi.org/10.48550/arXiv.2108.07455">Hoshino
+and Yanagi (2023) “Causal inference with noncompliance and unknown
+interference”</a>.</p>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="variable-definitions" class="section level4">
+<h4>Variable Definitions</h4>
+<p>Consider a finite population of <span class="math inline">\(n\)</span> units, <span class="math inline">\(N_n
+= \{ 1, \dots, n \}\)</span>. Let <span class="math inline">\(A_{ij} \in
+\{ 0, 1 \}\)</span> indicate whether or not units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> are adjacent, that is, <span class="math inline">\(A_{ij} = 1\)</span> if there is a link between
+<span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> and <span class="math inline">\(A_{ij}
+= 0\)</span> otherwise. Assume <span class="math inline">\(A_{ij} =
+A_{ji}\)</span> for all <span class="math inline">\(i,j \in N_n\)</span>
+and <span class="math inline">\(A_{ii} = 0\)</span> for all <span class="math inline">\(i \in N_n\)</span>.</p>
+<p>For each unit <span class="math inline">\(i \in N_n\)</span>, we
+observe:</p>
+<ul>
+<li><span class="math inline">\(Y_i \in \mathbb{R}\)</span>: An outcome
+variable.</li>
+<li><span class="math inline">\(D_i \in \{ 0, 1 \}\)</span>: A binary
+treatment.</li>
+<li><span class="math inline">\(Z_i \in \{ 0, 1 \}\)</span>: A binary
+IV.</li>
+</ul>
+<p>Let:</p>
+<ul>
+<li><span class="math inline">\(\mathbf{D} = (D_i)_{i \in
+N_n}\)</span>.</li>
+<li><span class="math inline">\(\mathbf{Z} = (Z_i)_{i \in
+N_n}\)</span>.</li>
+<li><span class="math inline">\(Y_i(\mathbf{d}, \mathbf{z})\)</span>:
+The potential outcome of unit <span class="math inline">\(i\)</span>
+given <span class="math inline">\(\mathbf{D} = \mathbf{d}\)</span> and
+<span class="math inline">\(\mathbf{Z} = \mathbf{z}\)</span>.</li>
+<li><span class="math inline">\(D_i(\mathbf{z})\)</span>: The potential
+treatment status of unit <span class="math inline">\(i\)</span> given
+<span class="math inline">\(\mathbf{Z} = \mathbf{z}\)</span>.</li>
+<li><span class="math inline">\(\mathbf{D}(\mathbf{z}) =
+(D_i(\mathbf{z}))_{i \in N_n}\)</span>.</li>
+</ul>
+<p>Then, we can define the potential outcome given <span class="math inline">\(\mathbf{Z} = \mathbf{z}\)</span> by <span class="math display">\[\begin{align*}
+  y_i(\mathbf{z}) = Y_i(\mathbf{D}(\mathbf{z}), \mathbf{z}).
+\end{align*}\]</span> We often write this potential outcome as <span class="math inline">\(y_i(Z_j = z_j, \mathbf{Z}_{-j} =
+\mathbf{z}_{-j})\)</span>, where <span class="math inline">\(i\)</span>
+may differ from <span class="math inline">\(j\)</span>. When <span class="math inline">\(i = j\)</span>, we simply write <span class="math inline">\(y_i(z_i, \mathbf{z}_{-i})\)</span>.</p>
+</div>
+<div id="instrumental-exposure" class="section level4">
+<h4>Instrumental Exposure</h4>
+<p>In the presence of network spillover, it is generally impossible to
+define identifiable causal estimands without introducing some
+restrictions. To address this issue, we consider an instrumental
+exposure <span class="math inline">\(T_i\)</span> for each <span class="math inline">\(i\)</span>. For example:</p>
+<ul>
+<li><span class="math inline">\(T_i = \mathbf{1}\{ \sum_{j \neq i}
+A_{ij} Z_j &gt; 0 \}\)</span>: Whether at least one of the direct
+neighbors of unit <span class="math inline">\(i\)</span> is treatment
+“eligible”.</li>
+<li><span class="math inline">\(T_i = \mathbf{1}\{ \sum_{j \neq i}
+A_{ij} D_j &gt; 0 \}\)</span>: Whether at least one of the direct
+neighbors of unit <span class="math inline">\(i\)</span> is
+treated.</li>
+</ul>
+<p>Assume that the instrumental exposure <span class="math inline">\(T_i\)</span> for each <span class="math inline">\(i\)</span> is determined from unit <span class="math inline">\(i\)</span>’s <span class="math inline">\(K\)</span>-neighborhood with some <span class="math inline">\(K \ge 1\)</span>. For example, <span class="math inline">\(K = 1\)</span> in the examples above.</p>
+<p>Denote the support of the instrumental exposure as <span class="math inline">\(\mathcal{T}\)</span>.</p>
+<p>The main motivation of <a href="https://doi.org/10.48550/arXiv.2108.07455">Hoshino and Yanagi
+(2023)</a> is to allow the possibility that the user-specified
+instrumental exposure <span class="math inline">\(T_i\)</span> is
+“incorrect”. See the paper for more details.</p>
+</div>
+</div>
+<div id="intention-to-treat-estimands" class="section level2">
+<h2>Intention-to-treat Estimands</h2>
+<div id="average-direct-effect-ade" class="section level4">
+<h4>Average Direct Effect (ADE)</h4>
+<p>Consider a sub-population <span class="math inline">\(S_n \subseteq
+N_n\)</span>. For example, we can consider the set of units whose
+degrees are <span class="math inline">\(\delta \ge 1\)</span>: <span class="math display">\[\begin{align*}
+  S_n(\delta) = \left\{ i \in N_n : \sum_{j \neq i} A_{ij} = \delta
+\right\}.
+\end{align*}\]</span></p>
+<p>For <span class="math inline">\(z \in \{ 0, 1 \}\)</span> and <span class="math inline">\(t \in \mathcal{T}\)</span>, let <span class="math display">\[\begin{align*}
+  \mu_i^Y(z, t) = \mathbb{E}[ Y_i \mid Z_i = z, T_i = t ],
+  \qquad
+  \mu_i^D(z, t) = \mathbb{E}[ D_i \mid Z_i = z, T_i = t ],
+\end{align*}\]</span> and <span class="math display">\[\begin{align*}
+  \bar \mu_{S_n}^Y(z, t) = \frac{1}{|S_n|} \sum_{i \in S_n} \mu_i^Y(z,
+t),
+  \qquad
+  \bar \mu_{S_n}^D(z, t) = \frac{1}{|S_n|} \sum_{i \in S_n} \mu_i^D(z,
+t),
+\end{align*}\]</span> where <span class="math inline">\(|S_n|\)</span>
+denotes the cardinality of <span class="math inline">\(S_n\)</span>.</p>
+<p>The ADE of the IV on the outcome and that on the treatment receipt
+are defined by <span class="math display">\[\begin{align*}
+  \mathrm{ADEY}_{S_n}(t) = \bar \mu_{S_n}^Y(1, t) - \bar \mu_{S_n}^Y(0,
+t),
+  \qquad
+  \mathrm{ADED}_{S_n}(t) = \bar \mu_{S_n}^D(1, t) - \bar \mu_{S_n}^D(0,
+t).
+\end{align*}\]</span> These estimands help us to understand the average
+effect of the unit’s own IV on the unit’s own outcome and that on the
+unit’s own treatment.</p>
+<p>We do not rule out the possibility that <code>t = NULL</code>. When
+<code>t = NULL</code>, we simply write <span class="math inline">\(\mathrm{ADEY}_{S_n}\)</span> and <span class="math inline">\(\mathrm{ADED}_{S_n}\)</span>, that is, <span class="math display">\[\begin{align*}
+  \mathrm{ADEY}_{S_n} = \bar \mu_{S_n}^Y(1) - \bar \mu_{S_n}^Y(0),
+  \qquad
+  \mathrm{ADED}_{S_n} = \bar \mu_{S_n}^D(1) - \bar \mu_{S_n}^D(0),
+\end{align*}\]</span> where <span class="math display">\[\begin{align*}
+  \bar \mu_{S_n}^Y(z) = \frac{1}{|S_n|} \sum_{i \in S_n} \mu_i^Y(z),
+  \qquad
+  \bar \mu_{S_n}^D(z) = \frac{1}{|S_n|} \sum_{i \in S_n} \mu_i^D(z)
+\end{align*}\]</span> with <span class="math inline">\(\mu_i^Y(z) =
+\mathbb{E}[ Y_i \mid Z_i = z ]\)</span> and <span class="math inline">\(\mu_i^D(z) = \mathbb{E}[ D_i \mid Z_i = z
+]\)</span>.</p>
+</div>
+<div id="average-indirect-effect-aie" class="section level4">
+<h4>Average Indirect Effect (AIE)</h4>
+<p>For <span class="math inline">\(z \in \{ 0, 1 \}\)</span>, let <span class="math display">\[\begin{align*}
+  \mu_{ji}^Y(z) = \mathbb{E}[ Y_j \mid Z_i = z ],
+  \qquad
+  \mu_{ji}^D(z) = \mathbb{E}[ D_j \mid Z_i = z ],
+\end{align*}\]</span> and <span class="math display">\[\begin{align*}
+  \bar \mu_{S_n}^Y(z; \mathcal{E}) = \frac{1}{|S_n|} \sum_{i \in S_n}
+\sum_{j \in \mathcal{E}_i} \mu_{ji}^Y(z),
+  \qquad
+  \bar \mu_{S_n}^D(z; \mathcal{E}) = \frac{1}{|S_n|} \sum_{i \in S_n}
+\sum_{j \in \mathcal{E}_i} \mu_{ji}^D(z),
+\end{align*}\]</span> where <span class="math inline">\(\mathcal{E}_i\)</span> denotes the set of units
+<span class="math inline">\(j \neq i\)</span> who belong to unit <span class="math inline">\(i\)</span>’s <span class="math inline">\(K\)</span>-neighborhood.</p>
+<p>The AIE of the IV on the outcome and that on the treatment receipt
+are defined by <span class="math display">\[\begin{align*}
+  \mathrm{AIEY}_{S_n} = \bar \mu_{S_n}^Y(1; \mathcal{E}) - \bar
+\mu_{S_n}^Y(0; \mathcal{E}),
+  \qquad
+  \mathrm{AIED}_{S_n} = \bar \mu_{S_n}^D(1; \mathcal{E}) - \bar
+\mu_{S_n}^D(0; \mathcal{E}).
+\end{align*}\]</span> These estimands are helpful in understanding the
+average effect of the unit’s own IV on the sum of the outcomes of others
+and that on the sum of the treatments of others.</p>
+</div>
+<div id="average-overall-effect-aoe" class="section level4">
+<h4>Average Overall Effect (AOE)</h4>
+<p>The AOE of the IV on the outcome and that on the treatment receipt
+are defined by <span class="math display">\[\begin{align*}
+  \mathrm{AOEY}_{S_n} = \mathrm{ADEY}_{S_n} + \mathrm{AIEY}_{S_n},
+  \qquad
+  \mathrm{AOED}_{S_n} = \mathrm{ADED}_{S_n} + \mathrm{AIED}_{S_n}.
+\end{align*}\]</span> These estimands are useful for understanding the
+average effect of the unit’s own IV on the sum of the unit’s own outcome
+and the outcomes of others and that on the sum of the unit’s own
+treatment and the treatments of others.</p>
+</div>
+<div id="average-spillover-effect-ase" class="section level4">
+<h4>Average Spillover Effect (ASE)</h4>
+<p>For <span class="math inline">\(z \in \{ 0, 1 \}\)</span> and <span class="math inline">\(t \neq t&#39;\)</span>, the ASE of the
+instrumental exposure on the outcome and that on the treatment receipt
+are defined by <span class="math display">\[\begin{align*}
+  \mathrm{ASEY}_{S_n}(z, t, t&#39;) = \bar \mu_{S_n}^Y(z, t) - \bar
+\mu_{S_n}^Y(z, t&#39;),
+  \qquad
+  \mathrm{ASED}_{S_n}(z, t, t&#39;) = \bar \mu_{S_n}^D(z, t) - \bar
+\mu_{S_n}^D(z, t&#39;).
+\end{align*}\]</span> If the pre-specified instrumental exposure <span class="math inline">\(T_i\)</span> is “correct” (cf. <a href="https://doi.org/10.48550/arXiv.2108.07455">Hoshino and Yanagi,
+2023</a>), these estimands allow us to understand the average spillover
+effect caused by changing the instrumental values of others on the
+outcome and that on the treatment receipt. However, if the pre-specified
+instrumental exposure <span class="math inline">\(T_i\)</span> is
+“incorrect”, these estimands do not generally have sensible causal
+interpretation. Accordingly, we should be cautious in interpreting the
+empirical results obtained by the ASE parameters.</p>
+</div>
+</div>
+<div id="local-average-treatment-effect-type-parameters" class="section level2">
+<h2>Local Average Treatment Effect Type Parameters</h2>
+<p>The ITT parameters may underestimate the effect of the treatment
+receipt on the outcome. To address this issue, <a href="https://doi.org/10.48550/arXiv.2108.07455">Hoshino and Yanagi
+(2023)</a> extend the notion of compliers and the local average
+treatment effect (LATE) type parameters to the current setting.</p>
+<div id="local-average-direct-effect-lade" class="section level4">
+<h4>Local Average Direct Effect (LADE)</h4>
+<p>Let <span class="math inline">\(\mathcal{C}_i(\mathbf{z}_{-i}) =
+\mathbf{1}\{ D_i(1, \mathbf{z}_{-i}) = 1, D_i(0, \mathbf{z}_{-i}) = 0
+\}\)</span> indicate the compliance status of unit <span class="math inline">\(i\)</span> given <span class="math inline">\(\mathbf{Z}_{-i} = \mathbf{z}_{-i}\)</span>.</p>
+<p>The LADE is defined by <span class="math display">\[\begin{align*}
+  \mathrm{LADE}_{S_n}(t)
+  = \sum_{i \in S_n} \sum_{\mathbf{z}_{-i} \in \{ 0, 1 \}^{n-1}} \{
+y_i(1, \mathbf{z}_{-i}) - y_i(0, \mathbf{z}_{-i}) \} \frac{
+\mathcal{C}_i(\mathbf{z}_{-i}) \pi_i(\mathbf{z}_{-i}, t) }{ \sum_{i \in
+S_n} \sum_{\mathbf{z}_{-i} \in \{ 0, 1 \}^{n-1}}
+\mathcal{C}_i(\mathbf{z}_{-i}) \pi_i(\mathbf{z}_{-i}, t) },
+\end{align*}\]</span> where <span class="math inline">\(\pi_i(\mathbf{z}_{-i}, t) = \Pr[ \mathbf{Z}_{-i} =
+\mathbf{z}_{-i} \mid T_i = t ]\)</span>. It is useful for understanding
+the average effect of the unit’s own treatment on the unit’s own outcome
+for the compliers.</p>
+<p>If <code>t = NULL</code>, the LADE reduces to <span class="math display">\[\begin{align*}
+  \mathrm{LADE}_{S_n}
+  = \sum_{i \in S_n} \sum_{\mathbf{z}_{-i} \in \{ 0, 1 \}^{n-1}} \{
+y_i(1, \mathbf{z}_{-i}) - y_i(0, \mathbf{z}_{-i}) \} \frac{
+\mathcal{C}_i(\mathbf{z}_{-i}) \pi_i(\mathbf{z}_{-i}) }{ \sum_{i \in
+S_n} \sum_{\mathbf{z}_{-i} \in \{ 0, 1 \}^{n-1}}
+\mathcal{C}_i(\mathbf{z}_{-i}) \pi_i(\mathbf{z}_{-i}) },
+\end{align*}\]</span> where <span class="math inline">\(\pi_i(\mathbf{z}_{-i}) = \Pr[ \mathbf{Z}_{-i} =
+\mathbf{z}_{-i} ]\)</span>.</p>
+<p>It is shown that the LADE is identifiable from the Wald type
+estimand: <span class="math display">\[\begin{align*}
+  \mathrm{LADE}_{S_n}(t)
+  = \frac{ \mathrm{ADEY}_{S_n}(t) }{ \mathrm{ADED}_{S_n}(t) }
+\end{align*}\]</span></p>
+</div>
+<div id="local-average-indirect-effect-laie" class="section level4">
+<h4>Local Average Indirect Effect (LAIE)</h4>
+<p>The LAIE is defined by <span class="math display">\[\begin{align*}
+  \mathrm{LAIE}_{S_n}
+  = \sum_{i \in S_n} \sum_{\mathbf{z}_{-i} \in \{ 0, 1 \}^{n-1}} \sum_{j
+\in \mathcal{E}_i} \{ y_j(Z_i = 1, \mathbf{Z}_{-i} = \mathbf{z}_{-i}) -
+y_j(Z_i = 0, \mathbf{Z}_{-i} = \mathbf{z}_{-i}) \} \frac{
+\mathcal{C}_i(\mathbf{z}_{-i}) \pi_i(\mathbf{z}_{-i}) }{ \sum_{i \in
+S_n} \sum_{\mathbf{z}_{-i} \in \{ 0, 1 \}^{n-1}}
+\mathcal{C}_i(\mathbf{z}_{-i}) \pi_i(\mathbf{z}_{-i}) }.
+\end{align*}\]</span> This parameter helps us understand the average
+effect of the complier’s treatment on the sum of the outcomes of
+others.</p>
+<p>It is shown that the LAIE is identifiable from the Wald type
+estimand: <span class="math display">\[\begin{align*}
+  \mathrm{LAIE}_{S_n}
+  = \frac{ \mathrm{AIEY}_{S_n} }{ \mathrm{ADED}_{S_n} }.
+\end{align*}\]</span> Note that the denominator is <span class="math inline">\(\mathrm{ADED}_{S_n}\)</span>, not <span class="math inline">\(\mathrm{AIED}_{S_n}\)</span>.</p>
+</div>
+<div id="local-average-overall-effect-laoe" class="section level4">
+<h4>Local Average Overall Effect (LAOE)</h4>
+<p>The LAOE is defined by <span class="math display">\[\begin{align*}
+  \mathrm{LAOE}_{S_n}
+  = \mathrm{LADE}_{S_n} + \mathrm{LAIE}_{S_n}.
+\end{align*}\]</span></p>
+<p>The LAOE is informative about the average effect of the compiler’s
+treatment on the sum of the compiler’s own outcome and the outcomes of
+others.</p>
+<p>It is trivial from the identification results for the LADE and LAIE
+parameters that the LAOE is identified by <span class="math display">\[\begin{align*}
+  \mathrm{LAOE}_{S_n}
+  = \frac{ \mathrm{AOEY}_{S_n} }{ \mathrm{ADED}_{S_n} }.
+\end{align*}\]</span></p>
+</div>
+<div id="local-average-spillover-effect-lase" class="section level4">
+<h4>Local Average Spillover Effect (LASE)</h4>
+<p>As discussed above, the ASE parameters do not admit meaningful causal
+interpretation if the pre-specified instrumental exposure is
+“incorrect”. For this reason, to define the LASE parameter, we assume
+that the pre-specified instrumental exposure is “correct” so that the
+potential outcome and the potential treatment status given <span class="math inline">\(Z_i = z\)</span> and <span class="math inline">\(T_i = t\)</span> are well-defined. Denote these
+variables as <span class="math inline">\(\tilde y_i(z, t)\)</span> and
+<span class="math inline">\(\tilde d_i(z, t)\)</span>. Letting <span class="math inline">\(\tilde{\mathcal{C}}_i(z, t, t&#39;) = \mathbf{1}\{
+\tilde d_i(z, t) = 1, \tilde d_i(z, t&#39;) = 0 \}\)</span>, the LASE is
+defined by <span class="math display">\[\begin{align*}
+  \mathrm{LASE}_{S_n}(z, t, t&#39;)
+  = \sum_{i \in S_n} \{ \tilde y_i(z, t) - \tilde y_i(z, t&#39;) \}
+\frac{ \tilde{\mathcal{C}}_i(z, t, t&#39;) }{ \sum_{i \in S_n}
+\tilde{\mathcal{C}}_i(z, t, t&#39;) }.
+\end{align*}\]</span> Note that the LASE is no longer well-defined if
+the pre-specified <span class="math inline">\(T_i\)</span> is
+“incorrect”.</p>
+<p>It is shown that the LASE is identifiable from the Wald type
+estimand: <span class="math display">\[\begin{align*}
+  \mathrm{LASE}_{S_n}(z, t, t&#39;)
+  = \frac{ \mathrm{ASEY}_{S_n}(z, t, t&#39;) }{ \mathrm{ASED}_{S_n}(z,
+t, t&#39;) }.
+\end{align*}\]</span></p>
+</div>
+</div>
+<div id="estimation" class="section level2">
+<h2>Estimation</h2>
+<p>We can estimate <span class="math inline">\(\bar \mu_{S_n}^Y(z,
+t)\)</span> and <span class="math inline">\(\bar \mu_{S_n}^D(z,
+t)\)</span> by <span class="math display">\[\begin{align*}
+  \widehat \mu_{S_n}^Y(z, t) &amp; = \frac{1}{|S_n|} \sum_{i \in S_n}
+\frac{Y_i \cdot \mathbf{1}\{ Z_i = z, T_i = t \}}{\widehat p_{S_n}(z,
+t)}, \\
+  \widehat \mu_{S_n}^D(z, t) &amp; = \frac{1}{|S_n|} \sum_{i \in S_n}
+\frac{D_i \cdot \mathbf{1}\{ Z_i = z, T_i = t \}}{\widehat p_{S_n}(z,
+t)},
+\end{align*}\]</span> where <span class="math display">\[\begin{align*}
+  \widehat p_{S_n}(z, t)
+  = \frac{1}{|S_n|} \sum_{i \in S_n} \mathbf{1}\{ Z_i = z, T_i = t \}.
+\end{align*}\]</span> Similarly, <span class="math inline">\(\bar
+\mu_{S_n}^Y(z; \mathcal{E})\)</span> and <span class="math inline">\(\bar \mu_{S_n}^D(z; \mathcal{E})\)</span> can be
+estimated by <span class="math display">\[\begin{align*}
+  \widehat \mu_{S_n}^Y(z; \mathcal{E}) &amp; = \frac{1}{|S_n|} \sum_{i
+\in S_n} \sum_{j \in \mathcal{E}_i} \frac{Y_j \cdot \mathbf{1}\{ Z_i = z
+\}}{\widehat p_{S_n}(z)}, \\
+  \bar \mu_{S_n}^D(z; \mathcal{E}) &amp; = \frac{1}{|S_n|} \sum_{i \in
+S_n} \sum_{j \in \mathcal{E}_i} \frac{D_j \cdot \mathbf{1}\{ Z_i = z
+\}}{\widehat p_{S_n}(z)},
+\end{align*}\]</span> where <span class="math display">\[\begin{align*}
+  \widehat p_{S_n}(z)
+  = \frac{1}{|S_n|} \sum_{i \in S_n} \mathbf{1}\{ Z_i = z \}.
+\end{align*}\]</span></p>
+<p>We can estimate the ADE parameters by <span class="math display">\[\begin{align*}
+  \widehat{\mathrm{ADEY}}_{S_n}(t) &amp; = \widehat \mu_{S_n}^Y(1, t) -
+\widehat \mu_{S_n}^Y(0, t), \\
+  \widehat{\mathrm{ADED}}_{S_n}(t) &amp; = \widehat \mu_{S_n}^D(1, t) -
+\widehat \mu_{S_n}^D(0, t), \\
+  \widehat{\mathrm{LADE}}_{S_n}(t) &amp; = \frac{
+\widehat{\mathrm{ADEY}}_{S_n}(t) }{ \widehat{\mathrm{ADED}}_{S_n}(t) }.
+\end{align*}\]</span></p>
+<p>The AIE parameters can be estimated by <span class="math display">\[\begin{align*}
+    \widehat{\mathrm{AIEY}}_{S_n} &amp; = \widehat \mu_{S_n}^Y(1;
+\mathcal{E}) - \widehat \mu_{S_n}^Y(0; \mathcal{E}), \\
+    \widehat{\mathrm{AIED}}_{S_n} &amp; = \widehat \mu_{S_n}^D(1;
+\mathcal{E}) - \widehat \mu_{S_n}^D(0; \mathcal{E}), \\
+    \widehat{\mathrm{LAIE}}_{S_n} &amp; = \frac{
+\widehat{\mathrm{AIEY}}_{S_n} }{ \widehat{\mathrm{ADED}}_{S_n} }.
+\end{align*}\]</span></p>
+<p>The AOE estimators are given by <span class="math display">\[\begin{align*}
+    \widehat{\mathrm{AOEY}}_{S_n} &amp; = \widehat{\mathrm{ADEY}}_{S_n}
++ \widehat{\mathrm{AIEY}}_{S_n}, \\
+    \widehat{\mathrm{AOED}}_{S_n} &amp; = \widehat{\mathrm{ADED}}_{S_n}
++ \widehat{\mathrm{AIED}}_{S_n}, \\
+    \widehat{\mathrm{LAOE}}_{S_n} &amp; = \widehat{\mathrm{LADE}}_{S_n}
++ \widehat{\mathrm{LAIE}}_{S_n}.
+\end{align*}\]</span></p>
+<p>The ASE estimators are <span class="math display">\[\begin{align*}
+  \widehat{\mathrm{ASEY}}_{S_n}(z, t, t&#39;) &amp; = \widehat
+\mu_{S_n}^Y(z, t) - \widehat \mu_{S_n}^Y(z, t&#39;), \\
+  \widehat{\mathrm{ASED}}_{S_n}(z, t, t&#39;) &amp; = \widehat
+\mu_{S_n}^D(z, t) - \widehat \mu_{S_n}^D(z, t&#39;), \\
+  \widehat{\mathrm{LASE}}_{S_n}(z, t, t&#39;) &amp; = \frac{
+\widehat{\mathrm{ASEY}}_{S_n}(z, t, t&#39;) }{
+\widehat{\mathrm{ASED}}_{S_n}(z, t, t&#39;) }.
+\end{align*}\]</span></p>
+</div>
+<div id="statistical-inference" class="section level2">
+<h2>Statistical Inference</h2>
+<p>The proposed estimators are consistent and asymptotically normally
+distributed under the assumption of approximate neighborhood
+interference (ANI) and certain restriction on the denseness of the
+network structure. Given this result, we can perform the statistical
+inference on the causal parameters based on network HAC estimation and a
+wild bootstrap approach. For more details, see <a href="https://doi.org/10.48550/arXiv.2108.07455">Hoshino and Yanagi
+(2023)</a>.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Hoshino, T. and Yanagi, T., 2023. Causal inference with noncompliance
+and unknown interference. arXiv preprint arXiv:2108.07455. <a href="https://doi.org/10.48550/arXiv.2108.07455">Link</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
